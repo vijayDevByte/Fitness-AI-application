@@ -35,12 +35,21 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<UserResponse>> getMethodName(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable String id) {
 
         ApiResponse<UserResponse> response = new ApiResponse<>("success", "Users fetched",
                 userService.findUserById(id));
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/validate/{id}")
+    public ResponseEntity<Boolean> validateUser(@PathVariable String id) {
+
+        // ApiResponse<Boolean> response = new ApiResponse<>("success", "Users fetched",
+        // userService.isUserExist(id));
+
+        return ResponseEntity.ok(userService.isUserExist(id));
     }
 
     @PostMapping("/getuser")

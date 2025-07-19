@@ -3,6 +3,7 @@ package com.project.user_service.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,7 +15,10 @@ import com.project.user_service.exception.UserNotFoundException;
 import com.project.user_service.model.UserModel;
 import com.project.user_service.repository.UserRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j
 public class UserService {
 
     @Autowired
@@ -83,18 +87,23 @@ public class UserService {
 
     public List<UserResponse> findAllUsers() {
         List<UserModel> users = userRepo.findAll();
-        UserResponse response = new UserResponse();
-        List<UserResponse> allUsers = new ArrayList<>();
-        users.forEach((user) -> {
+        System.out.println(users);
+
+        List<UserResponse> allUsers = users.stream().map(user -> {
+            UserResponse response = new UserResponse();
             response.setId(user.getId());
             response.setEmail(user.getEmail());
             response.setUserName(user.getUserName());
             response.setUserRole(user.getUserRole().name());
-            allUsers.add(response);
-
-        });
+            return response;
+        }).collect(Collectors.toList());
 
         return allUsers;
+    }
+
+    public Boolean isUserExist(String userId) {
+        log.info("calling User Validation for userId {userid}", userId);
+        return userRepo.existsById(userId);
     }
 
 }
